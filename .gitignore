@@ -2,3 +2,5 @@
 /venv
 Dockerfile
 docker-compose.yml
+websites.txt
+__pycache__

@@ -1,4 +1,6 @@
 from modules.base_scraper import BaseScraper
+from models.real_estate_listing import RealEstateListing
+import re
 from utils.url_builder import build_flatfox_url
 from playwright.sync_api import sync_playwright
 import os
@@ -14,6 +16,8 @@ class FlatfoxScraper(BaseScraper):
             page = browser.new_page()
             print(f"🔍 Navigating to: {url}")
             page.goto(url)
+            # print("📄 Dumping HTML preview...")
+            # print(page.content()[:1000])
 
             try:
                 page.click('button:has-text("Akzeptieren")', timeout=5000)
@@ -21,18 +25,22 @@ class FlatfoxScraper(BaseScraper):
                 pass
 
             page.wait_for_selector(".listing-thumb", timeout=20000)
-
+            page.wait_for_timeout(2000)
             listings = []
             for el in page.query_selector_all(".listing-thumb"):
-                title = el.query_selector(".listing-thumb-title h2")
-                price = el.query_selector(".price")
-                link = el.query_selector("a")
-                if title and price and link:
-                    listings.append({
-                        "title": title.inner_text().strip(),
-                        "price": price.inner_text().strip() + " CHF",
-                        "url": "https://flatfox.ch" + link.get_attribute("href")
-                    })
+                title_el = el.query_selector(".listing-thumb-title h2")
+                price_el = el.query_selector(".price")
+                link_el = el.query_selector("a")
+                if title_el and price_el and link_el:
+                    title = title_el.inner_text().strip()
+                    price = price_el.inner_text().strip()
+                    url = "https://flatfox.ch" + link_el.get_attribute("href")
+
+                    rooms_match = re.search(r"([\d.]+)\s*Zimmer", title)
+                    rooms = float(rooms_match.group(1)) if rooms_match else None
+
+                    location = title.split(",")[-1].strip() if "," in title else ""
+                    listings.append(RealEstateListing(title, price + " CHF", location, url, rooms))
 
             browser.close()
             return listings

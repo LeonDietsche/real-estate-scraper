@@ -29,3 +29,20 @@ def build_flatfox_url(profile):
     category_query = "&" + "&".join([f"object_category={cat}" for cat in object_categories])
 
     return f"{base_url}?{query_string}{category_query}"
+
+
+def build_homegate_url(params, page=1):
+    base_url = f"https://www.homegate.ch/mieten/immobilien/plz-{params['zip']}/trefferliste"
+    query = []
+
+    if "radius" in params:
+        query.append(f"be={params['radius']}")
+    if "min_rooms" in params:
+        query.append(f"ac={params['min_rooms']}")
+    if "max_rooms" in params:
+        query.append(f"ad={params['max_rooms']}")
+    if "max_price" in params:
+        query.append(f"ah={params['max_price']}")
+
+    query.append(f"ep={page}")
+    return f"{base_url}?" + "&".join(query)

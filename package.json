@@ -1,0 +1,17 @@
+{
+  "name": "real-estate-scraper",
+  "version": "1.0.0",
+  "description": "1. pip install -r requirements.txt \r     (preferrably use an venv ( \r         1.1 python -m venv venv\r         1.2 venv\\Scripts\\activate)\r     )",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^24.10.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  }
+}
