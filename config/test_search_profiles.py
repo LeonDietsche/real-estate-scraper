@@ -30,5 +30,26 @@ search_profiles = [
             "max_rooms": 4.5,
             "max_price": 3500
         }
+    },
+    ,
+      {
+        "name": "homegate_api_sg",
+        "scraper": "homegate",
+        "jid": os.getenv("JID_SG_1_5ZIMMER"),
+        "params": {
+            "zip": "9000",
+            "radius": 2000,
+            "min_rooms": 1.5,
+            "max_rooms": 3.5,
+            "max_price": 1500
+        }
+    }
+     {
+        "name": "vermietungen_stadt_zh_all",
+        "scraper": "vermietungen-stadt-zuerich",
+        "jid": None,
+        "params": {
+            "exact_rooms": 4.5
+        }
     }
 ]

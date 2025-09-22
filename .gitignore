@@ -5,3 +5,4 @@ docker-compose.yml
 websites.txt
 __pycache__
 node_modules
+/data

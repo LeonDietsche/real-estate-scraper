@@ -1,4 +1,4 @@
-from urllib.parse import urlencode
+from urllib.parse import urljoin, urlencode
 
 def build_flatfox_url(profile):
     base_url = "https://flatfox.ch/de/search/"
@@ -46,3 +46,7 @@ def build_homegate_url(params, page=1):
 
     query.append(f"ep={page}")
     return f"{base_url}?" + "&".join(query)
+
+
+def build_stadt_zuerich_url(_params: dict | None = None) -> str:
+    return "https://www.vermietungen.stadt-zuerich.ch/publication/apartment/"
