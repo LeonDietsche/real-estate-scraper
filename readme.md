@@ -33,6 +33,23 @@ python entrypoint.py
 
 ## 🐳 Run with Docker / Kubernetes
 TODO: Docker Compose and Kubernetes manifests will be added later.
+[Kubernetes Cluster]
+   |
+   ├── Master Node (control plane)
+   |
+   └── Worker Node(s)
+         ├── Pod: Scraper
+         │      └── Container: real-estate-scraper
+         │            ↘ writes listings
+         │
+         ├── Pod: Database
+         │      └── Container: postgres (PVC for storage)
+         │
+         └── Pod: WhatsApp Service
+                └── Container: whatsapp-service
+                        ↘ sends messages via WhatsApp
+
+<img width="402" height="717" alt="image" src="https://github.com/user-attachments/assets/35c9a574-5e9e-4d52-b691-ed9a858ee8d0" />
 
 ## 📌 Future Add-ons
 
