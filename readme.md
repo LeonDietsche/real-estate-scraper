@@ -34,37 +34,24 @@ python entrypoint.py
 ## 🐳 Run with Docker / Kubernetes
 TODO: Docker Compose and Kubernetes manifests will be added later.
 
-flowchart TD
-  subgraph K8s["Kubernetes Cluster"]
-    subgraph CP["Master Node (control plane)"]
-      API[API Server]:::dim
-      SCH[Scheduler]:::dim
-      CTRL[Controller Manager]:::dim
-      ETCD[etcd]:::dim
-    end
+```
+[Kubernetes Cluster]
+   |
+   ├── Master Node (control plane)
+   |
+   └── Worker Node(s)
+         ├── Pod: Scraper
+         │      └── Container: real-estate-scraper
+         │            ↘ writes listings
+         │
+         ├── Pod: Database
+         │      └── Container: postgres (PVC for storage)
+         │
+         └── Pod: WhatsApp Service
+                └── Container: whatsapp-service
+                        ↘ sends messages via WhatsApp
+```
 
-    subgraph WN["Worker Node(s)"]
-      subgraph PodScraper["Pod: Scraper"]
-        SvcScraper["Container: real-estate-scraper"]
-      end
-
-      subgraph PodDB["Pod: Database"]
-        DB["Container: postgres"]
-        PVC[PVC (persistent storage)]
-      end
-
-      subgraph PodWA["Pod: WhatsApp Service"]
-        WA["Container: whatsapp-service"]
-      end
-    end
-  end
-
-  SvcScraper -->|writes listings| DB
-  DB --- PVC
-  SvcScraper -->|HTTP (ClusterIP Service)| WA
-  WA -->|sends messages| Internet[(WhatsApp Web)]
-
-  classDef dim fill:#eee,stroke:#bbb,color:#666;
 <img width="402" height="717" alt="image" src="https://github.com/user-attachments/assets/35c9a574-5e9e-4d52-b691-ed9a858ee8d0" />
 
 ## 📌 Future Add-ons
