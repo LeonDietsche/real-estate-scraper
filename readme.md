@@ -34,12 +34,25 @@ python entrypoint.py
 ## 🐳 Run with Docker / Kubernetes
 TODO: Docker Compose and Kubernetes manifests will be added later.
 
-Docker Commands: 
-B) "docker compose build"
-C) "docker compose up --no-start scraper_homegate_zurich_4z-1"
+```
+[Kubernetes Cluster]
+   |
+   ├── Master Node (control plane)
+   |
+   └── Worker Node(s)
+         ├── Pod: Scraper
+         │      └── Container: real-estate-scraper
+         │            ↘ writes listings
+         │
+         ├── Pod: Database
+         │      └── Container: postgres (PVC for storage)
+         │
+         └── Pod: WhatsApp Service
+                └── Container: whatsapp-service
+                        ↘ sends messages via WhatsApp
+```
 
-Open Shell: " docker exec -it real-estate-scraper-container sh "
-Delte Profile: " docker compose exec scraper python -c "from utils.dedupe_db import purge_profile; purge_profile('vermietungen_stadt_zh_all'); print('Done') "
+<img width="402" height="717" alt="image" src="https://github.com/user-attachments/assets/35c9a574-5e9e-4d52-b691-ed9a858ee8d0" />
 
 ## 📌 Future Add-ons
 
