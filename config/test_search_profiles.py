@@ -4,7 +4,19 @@ from dotenv import load_dotenv
 load_dotenv()
 
 search_profiles = [
-      {
+    {
+        "name": "homegate_zurich_4zimmer",
+        "scraper": "homegate",
+        "jid": os.getenv("JID_ZURICH_4ZIMMER"),
+        "params": {
+            "zip": "8001",
+            "radius": 2000,
+            "min_rooms": 4.5,
+            "max_rooms": 4.5,
+            "max_price": 3500
+        }
+    },
+    {
         "name": "flatfox_zurich_4zimmer",
         "scraper": "flatfox",
         "jid": os.getenv("JID_ZURICH_4ZIMMER"),
@@ -20,34 +32,9 @@ search_profiles = [
         }
     },
     {
-        "name": "homegate_api_zurich",
-        "scraper": "homegate",
-        "jid": None,
-        "params": {
-            "zip": "8001",
-            "radius": 2000,
-            "min_rooms": 4.5,
-            "max_rooms": 4.5,
-            "max_price": 3500
-        }
-    },
-    ,
-      {
-        "name": "homegate_api_sg",
-        "scraper": "homegate",
-        "jid": os.getenv("JID_SG_1_5ZIMMER"),
-        "params": {
-            "zip": "9000",
-            "radius": 2000,
-            "min_rooms": 1.5,
-            "max_rooms": 3.5,
-            "max_price": 1500
-        }
-    }
-     {
-        "name": "vermietungen_stadt_zh_all",
+        "name": "vermietungen_stadt_zh_4zimmer",
         "scraper": "vermietungen-stadt-zuerich",
-        "jid": None,
+        "jid": os.getenv("JID_ZURICH_4ZIMMER"),
         "params": {
             "exact_rooms": 4.5
         }

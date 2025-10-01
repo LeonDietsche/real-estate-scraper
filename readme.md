@@ -34,6 +34,13 @@ python entrypoint.py
 ## 🐳 Run with Docker / Kubernetes
 TODO: Docker Compose and Kubernetes manifests will be added later.
 
+Docker Commands: 
+B) "docker compose build"
+C) "docker compose up --no-start scraper_homegate_zurich_4z-1"
+
+Open Shell: " docker exec -it real-estate-scraper-container sh "
+Delte Profile: " docker compose exec scraper python -c "from utils.dedupe_db import purge_profile; purge_profile('vermietungen_stadt_zh_all'); print('Done') "
+
 ## 📌 Future Add-ons
 
 Categorization (e.g., Genossenschaftswohnungen, MFH, Einfamilienhaus, WG-Zimmer Suche)
@@ -46,7 +53,7 @@ Auto-delete outdated listings
 
 ## 🌐 (Future) Target Websites
 
-This project is built with connectors/scrapers for:
+This project is built with connectors for:
 
 newhome.ch
 homegate.ch

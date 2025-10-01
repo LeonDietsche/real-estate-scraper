@@ -71,8 +71,8 @@ class VermietungenStadtZuerichScraper(BaseScraper):
                 return None
 
         exact_rooms = _to_float(params.get("exact_rooms"))
-        min_rooms = _to_float(params.get("min_rooms"))
-        max_rooms = _to_float(params.get("max_rooms"))
+        min_rooms   = _to_float(params.get("min_rooms"))
+        max_rooms   = _to_float(params.get("max_rooms"))
 
         if exact_rooms is not None:
             html = self._post_with_filters(exact_rooms, exact_rooms)
@@ -86,24 +86,35 @@ class VermietungenStadtZuerichScraper(BaseScraper):
         soup = BeautifulSoup(html, "html.parser")
         rows = soup.select("div.table-container.main-table table tbody tr")
 
+        # If nothing matched, just return an empty list instead of crashing
+        if not rows:
+            return []
+
+        def text_of(tr, css: str) -> str:
+            el = tr.select_one(css)
+            return el.get_text(strip=True) if el else ""
+
+        def href_of(tr, css: str) -> str:
+            el = tr.select_one(css)
+            return (el.get("href") or "") if el else ""
+
         listings: list[RealEstateListing] = []
         for tr in rows:
-            address = (tr.select_one("td.publicated_adress") or {}).get_text(strip=True)
-            rooms_txt = (tr.select_one("td.rooms") or {}).get_text(strip=True)
-            brutto_txt = (tr.select_one("td.rentalgross") or {}).get_text(strip=True)
+            address    = text_of(tr, "td.publicated_adress")
+            rooms_txt  = text_of(tr, "td.rooms")
+            brutto_txt = text_of(tr, "td.rentalgross")
 
-            apply_a = tr.select_one("td.apply_button a.apply_button")
-            href = apply_a.get("href") if apply_a else ""
-            url = urljoin("https://www.vermietungen.stadt-zuerich.ch", href) if href else self._list_url()
+            href = href_of(tr, "td.apply_button a.apply_button")
+            url  = urljoin("https://www.vermietungen.stadt-zuerich.ch", href) if href else self._list_url()
 
             price_str = _first_num(brutto_txt)
             rooms_str = _first_num(rooms_txt)
 
-            # client-side safety net
-            def _f(x):
-                try: return float(x)
-                except Exception: return None
-            rv = _f(rooms_str)
+            # numeric rooms for filtering
+            try:
+                rv = float(rooms_str) if rooms_str else None
+            except Exception:
+                rv = None
 
             if exact_rooms is not None and (rv is None or abs(rv - exact_rooms) > 1e-9):
                 continue
@@ -113,7 +124,7 @@ class VermietungenStadtZuerichScraper(BaseScraper):
                 continue
 
             parts = []
-            if address: parts.append(address)
+            if address:   parts.append(address)
             if rooms_str: parts.append(f"{rooms_str} Zi.")
             if price_str: parts.append(f"CHF {price_str}")
             title = ", ".join(parts) + " | vermietungen.stadt-zuerich.ch"

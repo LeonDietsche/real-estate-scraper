@@ -8,7 +8,8 @@ from datetime import datetime, timezone
 
 from models.real_estate_listing import RealEstateListing
 
-DEFAULT_DB_PATH = os.environ.get("DEDUP_DB_PATH", "data/dedupe.sqlite3")
+DEFAULT_DB_PATH = os.environ.get("DEDUP_DB_PATH", "data/realestate.db")
+print(f"[DB] using SQLite at: {DEFAULT_DB_PATH}")
 
 def _now_iso() -> str:
     # e.g., "2025-09-12T14:32:05Z"
@@ -181,3 +182,20 @@ def get_recent_listings(profile_name: str, limit: int = 50, db_path: str = DEFAU
         """, (profile_name, limit))
         cols = [d[0] for d in cur.description]
         return [dict(zip(cols, row)) for row in cur.fetchall()]
+
+def delete_listing(profile_name: str, url: str, *, also_clear_seen: bool = False,
+                   db_path: str = DEFAULT_DB_PATH) -> None:
+    with _conn(db_path) as con:
+        cur = con.cursor()
+        cur.execute("DELETE FROM listings WHERE profile_name=? AND url=?", (profile_name, url))
+        if also_clear_seen:
+            cur.execute("DELETE FROM seen_listings WHERE profile_name=? AND url=?", (profile_name, url))
+        con.commit()
+
+def purge_profile(profile_name: str, *, db_path: str = DEFAULT_DB_PATH) -> None:
+    """Danger: remove ALL rows for a profile."""
+    with _conn(db_path) as con:
+        cur = con.cursor()
+        cur.execute("DELETE FROM listings WHERE profile_name=?", (profile_name,))
+        cur.execute("DELETE FROM seen_listings WHERE profile_name=?", (profile_name,))
+        con.commit()
